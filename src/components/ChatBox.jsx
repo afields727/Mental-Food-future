@@ -82,8 +82,9 @@ export default function ChatBox({ initialUserAllergies }) {
 
   function handleUserSend() {
     if (!userText.trim()) return;
-    push({ sender: "user", text: userText });
-    const lt = userText.trim().toLowerCase();
+    const textToSend = userText.trim()
+    push({ sender: "user", text: textToSend });
+    const lt = textToSend.toLowerCase();
     setUserText("");
     if (awaitingConfirm) {
       if (lt === "yes" || lt === "y") {
@@ -109,11 +110,42 @@ export default function ChatBox({ initialUserAllergies }) {
       if (lt.includes("stress") || lt.includes("stressed")) return handleMoodSelection("stressed");
       if (lt.includes("okay")) return handleMoodSelection("okay");
       if (lt.includes("good")) return handleMoodSelection("good");
-      push({ sender: "app", text: "Thanks — I heard: " + userText });
+      // Try OpenAI chat endpoint first. If it fails, fallback to local echo.
+      (async () => {
+        try {
+          const resp = await fetch('/api/openai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: textToSend })
+          })
+          if (!resp.ok) throw new Error('OpenAI API not available')
+          const j = await resp.json()
+          const result = j.result || 'Sorry, no response.'
+          push({ sender: 'app', text: result })
+        } catch (err) {
+          // fallback
+          push({ sender: 'app', text: 'Thanks — I heard: ' + textToSend })
+        }
+      })()
       return;
     }
 
-    push({ sender: "app", text: "Thanks for sharing. If you'd like, tell me more or choose one of the previous options." });
+    // For other conversation, also attempt an OpenAI call to provide helpful suggestions.
+    (async () => {
+      try {
+        const resp = await fetch('/api/openai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: textToSend })
+        })
+        if (!resp.ok) throw new Error('OpenAI API not available')
+        const j = await resp.json()
+        const result = j.result || "Thanks for sharing."
+        push({ sender: 'app', text: result })
+      } catch (err) {
+        push({ sender: "app", text: "Thanks for sharing. If you'd like, tell me more or choose one of the previous options." })
+      }
+    })()
   }
 
   const lastAppMessage = [...messages].reverse().find((m) => m.sender === "app");

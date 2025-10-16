@@ -12,18 +12,21 @@ export default function Login() {
     e.preventDefault()
     setMessage('')
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setMessage('Login successful — redirecting to your tracker...')
-        setTimeout(()=>router.push('/tracker'), 500)
-      } else {
-        setMessage(data.error || 'Login failed')
+      // Fake login: check localStorage for stored user
+      const raw = localStorage.getItem('mf_user')
+      if (raw) {
+        const u = JSON.parse(raw)
+        if (u.email === email) {
+          setMessage('Login successful — redirecting to your tracker...')
+          setTimeout(()=>router.push('/tracker'), 400)
+          return
+        }
       }
+      // If no matching local user, create a demo user and store
+      const demo = { id: `user_${Date.now()}`, name: 'Demo', email }
+      localStorage.setItem('mf_user', JSON.stringify(demo))
+      setMessage('Login successful — demo user saved locally. Redirecting...')
+      setTimeout(()=>router.push('/tracker'), 400)
     } catch (err) {
       setMessage('Network error')
     }

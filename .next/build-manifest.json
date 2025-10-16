@@ -27,15 +27,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/chat": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/chat.js"
-    ],
     "/signup": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/signup.js"
+    ],
+    "/tracker": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/tracker.js"
     ]
   },
   "ampFirstPages": []

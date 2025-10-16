@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ChatBox from '../src/components/ChatBox'
 
 export default function Tracker() {
+  const [user, setUser] = useState(null)
   const [dietGoals, setDietGoals] = useState(['Eat more vegetables'])
   const [mentalGoals, setMentalGoals] = useState(['Practice 5 minutes mindfulness'])
   const [weeklyGoal, setWeeklyGoal] = useState('Walk 3x this week')
   const [newDiet, setNewDiet] = useState('')
   const [newMental, setNewMental] = useState('')
+  const [userLoaded, setUserLoaded] = useState(false)
+
+  useEffect(() => {
+    const raw = localStorage.getItem('mf_user')
+    if (raw) {
+      try { setUser(JSON.parse(raw)) } catch (e) { setUser(null) }
+    }
+    setUserLoaded(true)
+  }, [])
 
   function addDiet() {
     if (!newDiet.trim()) return
@@ -29,6 +39,14 @@ export default function Tracker() {
       <header style={{textAlign:'center', marginBottom:18}}>
         <h1 style={{margin:0, color:'#0b8457'}}>Your Tracker</h1>
         <p style={{color:'#1f7a4f'}}>Set weekly goals and track diet and mental wellbeing.</p>
+        {user ? (
+          <div style={{marginTop:8}}>
+            <strong style={{color:'#0b8457'}}>Welcome, {user.name || user.email}</strong>
+            <button onClick={() => { localStorage.removeItem('mf_user'); setUser(null); window.location = '/' }} style={{marginLeft:12}}>Sign Out</button>
+          </div>
+        ) : (
+          <div style={{marginTop:8}}><em style={{color:'#0b8457'}}>No local user detected — sign up or login</em></div>
+        )}
       </header>
 
       <main style={{display:'grid', gridTemplateColumns: '1fr 380px', gap:18}}>

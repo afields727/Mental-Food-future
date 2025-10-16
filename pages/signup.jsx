@@ -46,24 +46,15 @@ export default function Signup() {
       return
     }
 
-    const allergyList = skipAllergies ? [] : Object.keys(allergies).map(k => {
-      const [category,item] = k.split(':')
-      return { category, item, allergic: true }
-    })
-
-    const res = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ name, email, password, allergies: allergyList, skipAllergies })
-    })
-    const data = await res.json()
-    if (res.ok) {
+    // Fake signup: store user locally and redirect to tracker
+    const user = { id: `user_${Date.now()}`, name, email, skipAllergies: !!skipAllergies }
+    try {
+      localStorage.setItem('mf_user', JSON.stringify(user))
       setMessage('Signup successful — redirecting to your tracker...')
       setStep(3)
-      // wait a moment so user sees confirmation then route to tracker
-      setTimeout(()=>router.push('/tracker'), 700)
-    } else {
-      setMessage(data.error || 'Signup failed')
+      setTimeout(()=>router.push('/tracker'), 600)
+    } catch (err) {
+      setMessage('Unable to save user locally')
     }
   }
 
