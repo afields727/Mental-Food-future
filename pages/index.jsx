@@ -3,7 +3,9 @@ import Link from 'next/link'
 export default function Home() {
   const container = {
     padding: 20,
-    fontFamily: 'Arial, sans-serif'
+    fontFamily: 'Arial, sans-serif',
+    background: 'linear-gradient(180deg,#eafbea,#dff6e6)',
+    minHeight: '100vh'
   }
 
   const header = {

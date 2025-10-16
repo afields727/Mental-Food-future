@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 const SAMPLE_FOODS = {
   fruits: ['Apple','Banana','Orange','Strawberry'],
@@ -8,6 +9,7 @@ const SAMPLE_FOODS = {
 }
 
 export default function Signup() {
+  const router = useRouter()
   const [step, setStep] = useState(0)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -56,8 +58,10 @@ export default function Signup() {
     })
     const data = await res.json()
     if (res.ok) {
-      setMessage('Signup successful: ' + JSON.stringify(data))
+      setMessage('Signup successful — redirecting to your tracker...')
       setStep(3)
+      // wait a moment so user sees confirmation then route to tracker
+      setTimeout(()=>router.push('/tracker'), 700)
     } else {
       setMessage(data.error || 'Signup failed')
     }

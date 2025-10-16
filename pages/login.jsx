@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 export default function Login() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
@@ -17,7 +19,8 @@ export default function Login() {
       })
       const data = await res.json()
       if (res.ok) {
-        setMessage('Login successful: ' + JSON.stringify(data.user))
+        setMessage('Login successful — redirecting to your tracker...')
+        setTimeout(()=>router.push('/tracker'), 500)
       } else {
         setMessage(data.error || 'Login failed')
       }
