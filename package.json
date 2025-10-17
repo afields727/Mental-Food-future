@@ -8,12 +8,15 @@
     "start": "next start"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "bcryptjs": "^2.4.3",
     "zod": "^3.21.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "typescript": "5.9.3",
+    "vitest": "^1.6.1"
+  }
 }
-

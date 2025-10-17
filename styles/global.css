@@ -1,0 +1,37 @@
+:root{
+  --mf-green: #0b8457;
+  --mf-green-dark: #0b6f47;
+  --mf-bg-start: #eafbea;
+  --mf-bg-end: #dff6e6;
+  --mf-card-bg: rgba(255,255,255,0.85);
+  --mf-radius: 10px;
+  --mf-font: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+html,body,#__next{height:100%}
+body{
+  margin:0; font-family:var(--mf-font); background: linear-gradient(180deg,var(--mf-bg-start),var(--mf-bg-end)); color:#093e27;
+}
+.container{padding:20px; max-width:1100px; margin:0 auto}
+.header{background:var(--mf-green); color:white; padding:18px; border-radius:var(--mf-radius); box-shadow:0 6px 18px rgba(11,132,87,0.12);}
+.header h1{margin:0}
+.grid-two{display:grid; grid-template-columns:1fr 380px; gap:18px}
+.card{background:var(--mf-card-bg); padding:16px; border-radius:10px; box-shadow:0 4px 10px rgba(4,60,30,0.05); margin-bottom:12px}
+.primary{background:var(--mf-green); color:white; padding:10px 14px; border-radius:8px; border:none; cursor:pointer}
+.ghost{background:transparent; color:var(--mf-green); padding:8px 12px; border-radius:8px; border:1px solid rgba(11,132,87,0.12); cursor:pointer}
+.small{padding:6px 8px; border-radius:8px; font-size:0.9rem}
+.btn-row{display:flex; gap:8px}
+.input{padding:8px 10px; border-radius:8px; border:1px solid #cfe7d3; width:100%; box-sizing:border-box}
+.note{font-size:0.95rem; color:#0b5b30}
+.toast{color:#b12d2d}
+.welcome{color:var(--mf-green-dark); font-weight:600}
+
+.pillBtn{padding:8px 10px; border-radius:8px; background:#fff; color:var(--mf-green); border:1px solid var(--mf-green); cursor:pointer}
+.pillBtn.selected{background:var(--mf-green); color:#fff}
+
+.moodBtn{font-size:18px; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid #cfe7d3; cursor:pointer}
+.moodBtn.selected{background:var(--mf-green); color:white}
+
+@media(max-width:880px){
+  .grid-two{grid-template-columns:1fr}
+}

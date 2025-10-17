@@ -3,6 +3,7 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
+  "/signup": "pages/signup.js",
   "/tracker": "pages/tracker.js",
-  "/signup": "pages/signup.js"
+  "/api/openai/chat": "pages/api/openai/chat.js"
 }

@@ -1,0 +1,139 @@
+.container {
+  max-width: 650px;
+  margin: 40px auto;
+  padding: 2rem;
+  background: #fbfff8;
+  border: 1px solid #e6f4ea;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  font-family: system-ui, sans-serif;
+  color: #0b3d20;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1rem;
+  background: var(--mf-green, #2f8a44);
+  color: white;
+  padding: 14px 18px;
+  border-radius: 8px;
+  box-shadow: 0 6px 14px rgba(11,132,87,0.08);
+}
+
+.subtitle {
+  color: rgba(255,255,255,0.92);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.formSection {
+  margin-top: 1rem;
+}
+
+.label {
+  display: block;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.note {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.75rem;
+}
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.btnPrimary {
+  background-color: #2f8a44;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btnPrimary:hover {
+  background-color: #217036;
+}
+
+.btnGhost {
+  background: none;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  color: #333;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.btnGhost:hover {
+  border-color: #2f8a44;
+  color: #2f8a44;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.3rem;
+}
+
+.allergyItem {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.categoryGroup {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed #e2e2e2;
+}
+
+.warning {
+  display: none; /* removed visual warning */
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.reviewList {
+  background: #f8f9fb;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  list-style-type: disc;
+  margin-left: 1.5rem;
+}
+
+.completed {
+  text-align: center;
+  padding: 2rem;
+}
+
+.message {
+  text-align: center;
+  color: #217036;
+  margin-top: 1rem;
+  font-weight: 500;
+}

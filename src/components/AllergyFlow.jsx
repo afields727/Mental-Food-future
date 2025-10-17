@@ -38,17 +38,18 @@ export default function AllergyFlow({ onComplete }) {
     return SUBSTITUTIONS[item] || [];
   }
 
+  function localToast(msg){ try { console.log('toast:',msg) } catch(e){} }
   async function finish(data) {
-    if (!confirmed) return alert("Please confirm selections before finishing.");
+    if (!confirmed) return localToast("Please confirm selections before finishing.");
     const payload = { name: data.name, email: data.email, allergies: data.allergies || [], skipAllergies: path === "skip" };
     if (onComplete) onComplete(payload);
     try {
       const res = await fetch("/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error("Signup failed");
-      alert("Signup successful");
+      localToast("Signup successful");
     } catch (err) {
       console.error(err);
-      alert("Signup error");
+      localToast("Signup error");
     }
   }
 
