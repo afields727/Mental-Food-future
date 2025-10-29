@@ -3,7 +3,5 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/signup": "pages/signup.js",
-  "/tracker": "pages/tracker.js",
-  "/learn-more": "pages/learn-more.js"
+  "/signup": "pages/signup.js"
 }
