@@ -5,5 +5,5 @@
   "/": "pages/index.js",
   "/signup": "pages/signup.js",
   "/tracker": "pages/tracker.js",
-  "/api/openai/chat": "pages/api/openai/chat.js"
+  "/learn-more": "pages/learn-more.js"
 }
