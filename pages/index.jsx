@@ -22,6 +22,12 @@ export default function Home() {
         </div>
 
         <div style={{ flex: 1 }} className="card">
+          <h3>Teen Mental Health</h3>
+          <p>Advice and resources for teenagers.</p>
+          <Link href="/teen-mental-health"><button className="primary">Explore</button></Link>
+        </div>
+
+        <div style={{ flex: 1 }} className="card">
           <h3>Log In</h3>
           <p>Already have an account? Log in to continue.</p>
           <Link href="/login"><button className="primary">Log In</button></Link>

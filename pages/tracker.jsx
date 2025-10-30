@@ -5,6 +5,7 @@ import MoodTracker from '../src/components/MoodTracker'
 import ProgressChart from '../src/components/ProgressChart'
 import Reminders from '../src/components/Reminders'
 import Toast from '../src/components/Toast'
+import Navigation from '../src/components/Navigation'
 
 // Recipes defined at module scope so they're available during render and
 // not redeclared inside the component (prevents initialization errors).
@@ -69,48 +70,7 @@ export default function Tracker() {
   // Goal functions that persist are defined later (to ensure persistence to localStorage)
 
 
-  // Fuzzy allergy matching helpers: normalization, simple synonyms, and substring checks.
-  function normalizeText(s) {
-    return (s || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').trim()
-  }
-
-  const ALLERGY_SYNONYMS = {
-    peanut: ['peanut', 'peanut butter', 'groundnut', 'peanuts'],
-    milk: ['milk', 'dairy', 'whole milk', 'skim milk'],
-    egg: ['egg', 'eggs', 'egg white', 'egg yolk'],
-    wheat: ['wheat', 'flour', 'whole wheat', 'bread'],
-    shrimp: ['shrimp', 'prawn', 'prawns'],
-    soy: ['soy', 'soya', 'soy sauce', 'tofu'],
-    salmon: ['salmon', 'fish', 'trout'],
-    almond: ['almond', 'almond butter', 'almonds'],
-    cashew: ['cashew', 'cashews'],
-    shellfish: ['shellfish', 'crab', 'lobster', 'mussel', 'clams']
-  }
-
-  function allergyToTokens(allergy) {
-    const norm = normalizeText(allergy)
-    const base = norm.split(' ')[0] || norm
-    const syn = ALLERGY_SYNONYMS[base] || []
-    const tokens = new Set([norm, base, ...syn.map(s => normalizeText(s))])
-    return tokens
-  }
-
-  function ingredientMatchesAnyAllergy(ingredient, allergies) {
-    const ing = normalizeText(ingredient)
-    if (!ing) return false
-    for (const a of allergies) {
-      const tokens = allergyToTokens(a)
-      for (const t of tokens) {
-        if (!t) continue
-        // exact or substring both ways to catch 'peanut butter' vs 'peanut'
-        if (ing === t || ing.includes(t) || t.includes(ing)) return true
-        // also check word boundaries: token appears as separate word
-        const re = new RegExp('\\b' + t.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&') + '\\b')
-        if (re.test(ing)) return true
-      }
-    }
-    return false
-  }
+import { ingredientMatchesAnyAllergy } from '../src/lib/allergyUtils';
 
   // Compute allowed recipes by excluding any recipe that contains an ingredient
   // that the user flagged as allergic (use fuzzy matching above)
@@ -152,7 +112,7 @@ export default function Tracker() {
     }
     window.addEventListener('mf_open_recipe', handler)
     return () => window.removeEventListener('mf_open_recipe', handler)
-  }, [user])
+  }, [])
 
   const [selectedRecipe, setSelectedRecipe] = useState(null)
   const [locationInput, setLocationInput] = useState('')
@@ -240,6 +200,7 @@ export default function Tracker() {
   // --- Persistence: favorites & saved estimates per user (localStorage) ---
   useEffect(() => {
     if (!user) { setFavorites([]); setSavedEstimates([]); return }
+    if (!user) { return }
     const key = `mf_data_${user.id}`
     const raw = localStorage.getItem(key)
     if (raw) {
@@ -261,6 +222,7 @@ export default function Tracker() {
   }, [user])
 
   function persistUserData(nextFavorites, nextEstimates, nextDietGoals, nextMentalGoals, nextWeeklyGoal) {
+  function persistUserData(nextDietGoals, nextMentalGoals, nextWeeklyGoal) {
     if (!user) return
     const key = `mf_data_${user.id}`
     const payload = {
@@ -301,32 +263,47 @@ export default function Tracker() {
     setDietGoals(next)
     setNewDiet('')
     persistUserData(null, null, next, null, null)
+    persistUserData(next, null, null)
   }
   function removeDiet(idx) { const next = dietGoals.filter((_,i)=>i!==idx); setDietGoals(next); persistUserData(null,null,next,null,null) }
+  function removeDiet(idx) { const next = dietGoals.filter((_,i)=>i!==idx); setDietGoals(next); persistUserData(next,null,null) }
   function addMental() {
     if (!newMental.trim()) return
     const next = [...mentalGoals, newMental.trim()]
     setMentalGoals(next)
     setNewMental('')
     persistUserData(null, null, null, next, null)
+    persistUserData(null, next, null)
   }
   function removeMental(idx) { const next = mentalGoals.filter((_,i)=>i!==idx); setMentalGoals(next); persistUserData(null,null,null,next,null) }
+  function removeMental(idx) { const next = mentalGoals.filter((_,i)=>i!==idx); setMentalGoals(next); persistUserData(null,next,null) }
 
   // Persist weekly goal whenever it changes
   useEffect(() => {
     if (!user) return
     persistUserData(null, null, null, null, weeklyGoal)
+    persistUserData(null, null, weeklyGoal)
   }, [weeklyGoal, user])
 
   return (
-    <div className="container">
+    <div className="container" style={{
+      backgroundColor: '#f0f4f0',
+      color: '#333',
+      padding: '1rem',
+      minHeight: '100vh'
+    }}>
+      <Navigation />
       <header style={{textAlign:'center', marginBottom:18}}>
         <h1 className="welcome">{welcomeMessage || 'Your Tracker'}</h1>
         <p className="note">Set weekly goals and track diet and mental wellbeing.</p>
         {user ? (
           <div style={{marginTop:8}}>
             <strong className="welcome">Welcome, {user.name || user.email}</strong>
-            <button onClick={() => { localStorage.removeItem('mf_user'); setUser(null); window.location = '/' }} style={{marginLeft:12}}>Sign Out</button>
+            <button onClick={() => { localStorage.removeItem('mf_user'); setUser(null); window.location = '/' }} style={{
+              marginLeft:12,
+              color: '#a33',
+              background: '#fff6f6'
+            }}>Sign Out</button>
           </div>
         ) : (
           <div style={{marginTop:8}}><em className="note">No local user detected — sign up or login</em></div>
@@ -400,22 +377,36 @@ export default function Tracker() {
           <div className="card">
             <h3>Diet Goals</h3>
             <ul>
-              {dietGoals.map((d,i)=>(<li key={i}>{d} <button className="small" style={{marginLeft:8}} onClick={()=>removeDiet(i)}>Remove</button></li>))}
-            </ul>
+              {dietGoals.map((d,i)=>(<li key={i} style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.5rem'}}>{d} <button className="small" style={{
+                marginLeft:8,
+                color: '#a33',
+                background: '#fff6f6'
+              }} onClick={()=>removeDiet(i)}>Remove</button></li>))}
+            </ul> 
             <div style={{display:'flex', gap:8}}>
               <input className="input" value={newDiet} onChange={e=>setNewDiet(e.target.value)} placeholder="Add diet improvement" />
-              <button className="primary" onClick={addDiet}>Add</button>
+              <button className="primary" onClick={addDiet} style={{
+                backgroundColor: '#2e8b57',
+                color: 'white'
+              }}>Add</button>
             </div>
           </div>
 
           <div className="card">
             <h3>Mental Health Goals</h3>
             <ul>
-              {mentalGoals.map((m,i)=>(<li key={i}>{m} <button className="small" style={{marginLeft:8}} onClick={()=>removeMental(i)}>Remove</button></li>))}
+              {mentalGoals.map((m,i)=>(<li key={i} style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'0.5rem'}}>{m} <button className="small" style={{
+                marginLeft:8,
+                color: '#a33',
+                background: '#fff6f6'
+              }} onClick={()=>removeMental(i)}>Remove</button></li>))}
             </ul>
             <div style={{display:'flex', gap:8}}>
               <input className="input" value={newMental} onChange={e=>setNewMental(e.target.value)} placeholder="Add mental wellbeing goal" />
-              <button className="primary" onClick={addMental}>Add</button>
+              <button className="primary" onClick={addMental} style={{
+                backgroundColor: '#2e8b57',
+                color: 'white'
+              }}>Add</button>
             </div>
           </div>
 
@@ -497,7 +488,9 @@ export default function Tracker() {
           <div className="card">
             <h4>Quick Links</h4>
             <p><Link href="/">Back to Home</Link></p>
-            <p><Link href="/signup">Edit Signup</Link></p>
+            <p><Link href="/recipes">Recipes</Link></p>
+            <p><Link href="/mood-tracker">Mood Tracker</Link></p>
+            <p><Link href="/quotes">Quotes</Link></p>
           </div>
         </aside>
       </main>

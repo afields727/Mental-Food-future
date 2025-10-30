@@ -140,7 +140,13 @@ export default function Reminders({ user }) {
 
   function handleFire(firedItem) {
     // show toast if allowed
-    if (remindersEnabled && !quietHours) showToast(firedItem.msg)
+    if (remindersEnabled && !quietHours) {
+      showToast(firedItem.msg);
+      try {
+        const audio = new Audio('/notification.mp3'); // Assumes notification.mp3 is in /public
+        audio.play();
+      } catch (e) { console.error("Could not play notification sound", e); }
+    }
     // update state depending on recurrence
     if (firedItem.recurrence === 'daily' || firedItem.recurrence === 'weekly') {
       setScheduled(prev => {

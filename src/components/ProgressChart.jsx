@@ -1,34 +1,44 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react';
 
 export default function ProgressChart({ user }) {
-  const [values, setValues] = useState([])
+  const [moodData, setMoodData] = useState([]);
 
-  useEffect(()=>{
-    if (!user) { setValues([]); return }
-    const days = []
-    for (let i=6;i>=0;i--) {
-      const d = new Date(); d.setDate(d.getDate()-i)
-      const ds = d.toISOString().slice(0,10)
-      const v = localStorage.getItem(`mf_mood_${user.id}_${ds}`)
-      days.push(v? Number(v): 0)
+  useEffect(() => {
+    if (!user) return;
+
+    const data = [];
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Load data for the current calendar month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(year, month, day);
+      const dateKey = d.toISOString().slice(0, 10);
+      const moodValue = localStorage.getItem(`mf_mood_${user.id}_${dateKey}`);
+      data.push({
+        date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        mood: moodValue ? Number(moodValue) : null,
+      });
     }
-    setValues(days)
-  },[user])
-
-  // simple bar chart
-  const max = Math.max(...values,5)
+    setMoodData(data);
+  }, [user]);
 
   return (
     <div>
-      <h4>7-day Mood Chart</h4>
-      <div style={{display:'flex', gap:6, alignItems:'end', height:80}}>
-        {values.map((v,i)=> (
-          <div key={i} style={{flex:1, display:'flex', flexDirection:'column', alignItems:'center'}}>
-            <div style={{width:'70%', background:'#e6f7ef', height: (v? (v/max)*100 : 6) + '%', borderRadius:6}}></div>
-            <small style={{marginTop:6}}>{v||'—'}</small>
+      <h4>Monthly Mood Chart</h4>
+      <div style={{ display: 'flex', height: '150px', border: '1px solid #eee', padding: '10px', gap: '2px', alignItems: 'flex-end' }}>
+        {moodData.map((day, index) => (
+          <div key={index} title={`${day.date}: Mood ${day.mood || 'N/A'}`} style={{ flex: 1, backgroundColor: '#a5d6a7', height: day.mood ? `${(day.mood / 5) * 100}%` : '0%', transition: 'height 0.3s' }}>
+            {/* Bar element */}
           </div>
         ))}
       </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#666', marginTop: '4px' }}>
+        <span>{moodData[0]?.date} (Start of month)</span>
+        <span>{moodData[moodData.length - 1]?.date}</span>
+      </div>
     </div>
-  )
+  );
 }

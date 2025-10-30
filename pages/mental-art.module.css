@@ -1,0 +1,40 @@
+.container {
+  padding: 2rem;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.intro {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.artPiece {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.artPiece img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.artPiece h3 {
+  margin-top: 1rem;
+}
+
+.artPiece p {
+  font-size: 0.9rem;
+  color: #555;
+}

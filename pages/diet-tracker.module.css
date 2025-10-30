@@ -1,0 +1,45 @@
+.container {
+  padding: 2rem;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.dayEntry {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.dayEntry label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.dayEntry textarea {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  min-height: 80px;
+}
+
+.submitButton {
+  padding: 1rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.submitButton:hover {
+  background-color: #005bb5;
+}
